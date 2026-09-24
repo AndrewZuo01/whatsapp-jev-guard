@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jev Guard · WhatsApp Scam Monitor</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <div class="brand">Jev Guard</div>
+      <div class="subbrand">Local WhatsApp scam-risk monitor</div>
+    </div>
+    <div class="top-actions">
+      <span id="connection" class="pill muted">Disconnected</span>
+      <button id="connectBtn" class="primary">Connect WhatsApp</button>
+      <button id="disconnectBtn" class="secondary" hidden>Disconnect</button>
+      <button id="settingsBtn" class="secondary">Settings</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="setup" class="setup card">
+      <div>
+        <span class="eyebrow">LOCAL · READ ONLY</span>
+        <h1>Scan once, then detect scam risk in new WhatsApp messages.</h1>
+        <p>Messages stay local by default. The app never replies, forwards, deletes, reports, or blocks messages automatically.</p>
+      </div>
+      <div id="qrWrap" class="qr-wrap"><div class="qr-placeholder">Click “Connect WhatsApp” to generate a QR code</div></div>
+    </section>
+
+    <section class="stats">
+      <div class="stat card"><span>Monitored messages</span><strong id="totalCount">0</strong></div>
+      <div class="stat card"><span>Open risks</span><strong id="riskCount" class="danger-text">0</strong></div>
+      <div class="stat card"><span>Current account</span><strong id="userName">Disconnected</strong></div>
+      <div class="stat card"><span>Scoring services</span><strong id="jevStatus">Not configured</strong></div>
+    </section>
+
+    <section class="workspace">
+      <aside class="inbox card">
+        <div class="section-head"><h2>New messages</h2><select id="filter"><option value="all">All</option><option value="risk">Risk first</option><option value="critical">Critical only</option></select></div>
+        <div id="messageList" class="message-list"><div class="empty">New messages appear here after connection</div></div>
+      </aside>
+      <section class="detail card">
+        <div class="section-head"><h2>Risk analysis</h2><span id="detailStatus" class="pill muted">Select a message</span></div>
+        <div id="detailEmpty" class="detail-empty">Select a message to view the decision evidence</div>
+        <div id="detailBody" hidden>
+          <div id="riskBanner" class="risk-banner"></div>
+          <div class="message-preview"><div id="detailMeta" class="meta"></div><p id="detailText"></p></div>
+          <h3>Account signals</h3>
+          <div id="accountSignals" class="account-signals"></div>
+          <h3>Decision evidence</h3><ul id="reasons" class="reasons"></ul>
+          <div class="recommendation"><span>Recommendation</span><p id="recommendation"></p></div>
+          <div class="detail-actions"><button class="secondary" id="falsePositiveBtn">Mark false positive</button><button class="danger" id="scamBtn">Confirm scam</button></div>
+        </div>
+      </section>
+    </section>
+
+    <section class="logs card">
+      <div class="section-head"><h2>Runtime logs</h2><span class="hint-inline">Full log: .data/logs/app.log</span></div>
+      <div id="logList" class="log-list"><div class="empty">No runtime logs yet</div></div>
+    </section>
+  </main>
+
+  <dialog id="settingsDialog">
+    <form method="dialog" id="settingsForm">
+      <div class="dialog-head"><h2>Scoring settings</h2><button value="cancel" class="icon-button">×</button></div>
+      <label>TypeSafe / Jev API key<input id="apiKey" type="password" placeholder="Optional: local fallback is used when empty" /></label>
+      <label>Jev model<input id="model" value="jev-latest" /></label>
+      <label>Jev API URL<input id="apiUrl" value="https://api.typesafe.ai/v1/systemone" /></label>
+      <label>OpenAI API key<input id="openaiApiKey" type="password" placeholder="Required for GPT comparison and translation" /></label>
+      <label>OpenAI model<input id="openaiModel" value="gpt-5.6-luna" /></label>
+      <label>OpenAI Responses URL<input id="openaiApiUrl" value="https://api.openai.com/v1/responses" /></label>
+      <label>WhatsApp proxy URL<input id="whatsappProxyUrl" placeholder="Optional, e.g. http://127.0.0.1:7897" /></label>
+      <p class="hint">Used by Baileys for WhatsApp Web traffic. Leave blank to keep the saved proxy value.</p>
+      <label class="checkbox-label"><input id="reviewUnknownOnly" type="checkbox" checked /> Review strangers only</label>
+      <p class="hint">When enabled, messages from saved contacts remain local and are not sent to Jev or GPT.</p>
+      <label class="checkbox-label"><input id="reviewOutgoing" type="checkbox" /> Review outgoing messages</label>
+      <p class="hint">When enabled, messages sent by your own account are also sent to Jev and GPT.</p>
+      <label class="checkbox-label"><input id="forceStrangerMode" type="checkbox" /> Treat every message as from a stranger</label>
+      <p class="hint">Testing mode. New messages are reviewed as unknown senders and displayed as “Stranger”. WhatsApp contacts are not changed.</p>
+      <p class="hint">Keys are not shown after saving. Leave password fields blank to keep the saved keys.</p>
+      <div class="dialog-actions"><button value="cancel" class="secondary">Cancel</button><button value="default" class="primary">Save</button></div>
+    </form>
+  </dialog>
+  <div id="toast" class="toast" aria-live="polite"></div>
+  <script src="/app.js"></script>
+</body>
+</html>

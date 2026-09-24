@@ -1,0 +1,53 @@
+{
+  "name": "whatsapp-jev-guard",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local WhatsApp message risk monitor powered by Baileys and Jev",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "package": "npm run package:all",
+    "package:all": "npm run package:electron:mac && npm run package:electron:win",
+    "package:electron:mac": "electron-builder --mac dmg zip --x64 --arm64",
+    "package:electron:win": "npm run package:electron:win:installer && npm run package:electron:win:portable",
+    "package:electron:win:installer": "electron-builder --win nsis --x64 --config.win.artifactName='${productName}-${version}-${os}-${arch}-installer.${ext}'",
+    "package:electron:win:portable": "electron-builder --win portable --x64 --config.win.artifactName='${productName}-${version}-${os}-${arch}-portable.${ext}'",
+    "package:mac": "npm run package:electron:mac",
+    "package:windows": "npm run package:electron:win"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "main": "electron-main.cjs",
+  "build": {
+    "appId": "com.whatsappjev.guard",
+    "productName": "WhatsApp Jev Guard",
+    "directories": { "output": "dist-electron" },
+    "files": [
+      "electron-main.cjs",
+      "server.mjs",
+      "server.js",
+      "public/**/*",
+      "package.json",
+      "node_modules/**/*"
+    ],
+    "extraResources": [{ "from": ".env.example", "to": ".env.example" }],
+    "mac": { "target": ["dmg", "zip"], "category": "public.app-category.utilities" },
+    "win": { "target": ["nsis", "portable"], "artifactName": "${productName}-${version}-${os}-${arch}.${ext}" },
+    "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true }
+  },
+  "dependencies": {
+    "@hapi/boom": "^10.0.1",
+    "@whiskeysockets/baileys": "^6.7.18",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "https-proxy-agent": "^7.0.6",
+    "pino": "^9.6.0",
+    "qrcode": "^1.5.4"
+  },
+  "devDependencies": {
+    "electron": "^38.2.0",
+    "electron-builder": "^26.0.12"
+  }
+}

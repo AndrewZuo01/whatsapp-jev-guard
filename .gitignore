@@ -1,0 +1,11 @@
+node_modules/
+.env
+.data/
+dist/
+dist-electron/
+dist-legacy-pkg-*/
+.DS_Store
+node_modules/
+__pycache__/
+*.pyc
+.env
