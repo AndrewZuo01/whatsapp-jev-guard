@@ -3,21 +3,6 @@
 Local WhatsApp scam-risk monitor. Baileys connects the account, Jev provides the primary score, and GPT-5.6-luna provides an independent comparison score, conversation-level turning point, and English translation.
 
 ## Install and run
-You have two options: use the pre-built files directly from the `dist` folder, or run the project from source with npm.
-
-### Option 1: Use Pre-built `dist` Files (Recommended for End Users)
-No build step or dev dependencies required — ready to use out of the box.
-
-1. Download needed version that match your operating system from the `dist` folder of this repository.
-2. Click the file and install it.
-
-The pre-built files in the `dist` folder are not code-signed with an Apple Developer ID. On first launch, macOS Gatekeeper may block execution and show a "cannot be opened because the developer cannot be verified" warning.
-
-1. After the security prompt appears, open **System Settings** → **Privacy & Security**.
-2. Scroll down to the **Security** section.
-3. Click **Allow Anyway** next to the blocked file notice.
-
-### Option 2: Run from Source (Developer Setup)
 
 ```bash
 cd whatsapp_jev_guard
@@ -32,22 +17,21 @@ If port 8787 is already in use, an existing instance may already be running. To 
 
 If `TYPESAFE_API_KEY` is empty, the app uses local heuristics so the connection and UI can still be tested.
 
-## Build desktop executables
+## Build standalone executables
 
 Install dependencies, then run:
 
 ```bash
-npm run package:electron:mac
-# On Windows, run: npm run package:electron:win
+npm run package:all
 ```
 
-The `dist-electron/` directory contains:
+The `dist/` directory contains:
 
-- macOS `.dmg` and `.zip` installers
-- Windows NSIS installer (`WhatsApp Jev Guard-0.1.0-win-x64-installer.exe`)
-- Windows portable executable (`WhatsApp Jev Guard-0.1.0-win-x64-portable.exe`)
+- `whatsapp-jev-guard-macos-arm64` for Apple Silicon Macs
+- `whatsapp-jev-guard-macos-x64` for Intel Macs
+- `whatsapp-jev-guard-win-x64.exe` for Windows 64-bit
 
-The packaged program opens the local dashboard automatically. Settings and Baileys data are stored in Electron's per-user application data directory; API keys are not compiled into the executable. On macOS, the first launch may require allowing the unsigned app in **System Settings → Privacy & Security**.
+The packaged program opens the local dashboard automatically. Keep `.env` beside the executable for API configuration. The program creates `.data/` beside the executable for Baileys login state, settings, and logs; API keys are not compiled into the executable. On macOS, the first launch may require allowing the unsigned binary in **System Settings → Privacy & Security**.
 
 ## Configuration
 
@@ -69,7 +53,6 @@ The TypeSafe URL is the correct System One endpoint. It accepts `POST`; a `GET` 
 ## Message analysis
 
 - Jev analyzes message content and account signals: saved-contact status, WhatsApp verified business name, business profile, country code, and first-seen status.
-- The dashboard's **Current account** card uses the WhatsApp profile nickname/push name when Baileys provides it, with a generic fallback instead of exposing the phone number or JID.
 - GPT-5.6-luna independently scores the same message and recent conversation turns.
 - The GPT comparison reports the first conversation turn where material scam evidence appears.
 - Each message has **Translate to English**. The translation uses the configured OpenAI model and is cached for the current process.
@@ -82,8 +65,7 @@ The TypeSafe URL is the correct System One endpoint. It accepts `POST`; a `GET` 
 - GPT requests use a 120-second timeout by default; override it with `OPENAI_TIMEOUT_MS` when using a slower local gateway.
 - A WhatsApp initialization timeout (`408`) is retried with backoff up to `MAX_RECONNECT_ATTEMPTS` (default: 3). If it still fails, the UI stops retrying and offers a clear-session-and-scan-again action so it cannot remain stuck in Connecting forever.
 - Baileys needs network access to WhatsApp Web endpoints. If `web.whatsapp.com` or the WhatsApp WebSocket is blocked by a firewall, VPN, proxy, or regional network policy, no QR event can be received; fix network access first, then use **Clear session and scan again**.
-- The monitor keeps the linked device online and also accepts recent offline-delivery (`append`) events, so messages received while the connection briefly reconnects are not silently discarded.
-- If a proxy is required, set `WHATSAPP_PROXY_URL`, for example `http://127.0.0.1:7897` or `http://user:password@host:port`, or enter it in **Settings → WhatsApp proxy URL**. The packaged Electron app does not inherit proxy variables from the Terminal; after saving a proxy, disconnect and connect WhatsApp again.
+- If a proxy is required, set `WHATSAPP_PROXY_URL`, for example `http://127.0.0.1:7890` or `http://user:password@host:port`, then restart the app.
 
 Runtime logs are stored in `.data/logs/app.log`; logs omit full message bodies.
 
